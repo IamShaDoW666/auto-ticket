@@ -11,16 +11,14 @@ import {
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BookingDataSchema } from "@/types";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -50,9 +48,14 @@ export default function Home() {
     },
   });
 
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "PASSENGER_DETAILS",
+  });
+
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof BookingDataSchema>) {
-    runTicket(values)
+    runTicket(values);
     console.log(values);
   }
   return (
@@ -90,17 +93,20 @@ export default function Home() {
             name="TATKAL"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>TATKAL</FormLabel>
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={(checked) => {
-                      return checked
-                        ? field.onChange(field.value = true)
-                        : field.onChange(field.value = false);
-                    }}
-                  />
-                </FormControl>
+                <div className="flex gap-x-4 items-center">
+                  <FormLabel>TATKAL</FormLabel>
+                  <FormControl>
+                    <Checkbox
+                      className="w-5 h-5 rounded-lg"
+                      checked={field.value}
+                      onCheckedChange={(checked) => {
+                        return checked
+                          ? field.onChange((field.value = true))
+                          : field.onChange((field.value = false));
+                      }}
+                    />
+                  </FormControl>
+                </div>
                 <FormMessage />
               </FormItem>
             )}
@@ -110,17 +116,20 @@ export default function Home() {
             name="PREMIUM_TATKAL"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>PREMIUM_TATKAL</FormLabel>
-                <FormControl>
-                <Checkbox
-                    checked={field.value}
-                    onCheckedChange={(checked) => {
-                      return checked
-                        ? field.onChange(field.value = true)
-                        : field.onChange(field.value = false);
-                    }}
-                  />
-                </FormControl>
+                <div className="flex gap-x-4 items-center">
+                  <FormLabel>PREMIUM_TATKAL</FormLabel>
+                  <FormControl>
+                    <Checkbox
+                      className="w-5 h-5 rounded-lg"
+                      checked={field.value}
+                      onCheckedChange={(checked) => {
+                        return checked
+                          ? field.onChange((field.value = true))
+                          : field.onChange((field.value = false));
+                      }}
+                    />
+                  </FormControl>
+                </div>
                 <FormMessage />
               </FormItem>
             )}
@@ -131,23 +140,26 @@ export default function Home() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>TRAIN_COACH</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a Coach" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="SL">SL</SelectItem>
-                  <SelectItem value="2A">2A</SelectItem>
-                  <SelectItem value="3A">3A</SelectItem>
-                  <SelectItem value="3E">3E</SelectItem>
-                  <SelectItem value="1A">1A</SelectItem>
-                  <SelectItem value="CC">CC</SelectItem>
-                  <SelectItem value="EC">EC</SelectItem>
-                  <SelectItem value="2S">2S</SelectItem>
-                </SelectContent>
-              </Select>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a Coach" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="SL">SL</SelectItem>
+                    <SelectItem value="2A">2A</SelectItem>
+                    <SelectItem value="3A">3A</SelectItem>
+                    <SelectItem value="3E">3E</SelectItem>
+                    <SelectItem value="1A">1A</SelectItem>
+                    <SelectItem value="CC">CC</SelectItem>
+                    <SelectItem value="EC">EC</SelectItem>
+                    <SelectItem value="2S">2S</SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -178,6 +190,89 @@ export default function Home() {
               </FormItem>
             )}
           />
+          {fields.map((passenger, index) => (
+            <div
+              className="flex gap-x-4 justify-between w-full"
+              key={passenger.id}
+            >
+              <div className="w-full flex flex-col gap-y-4">
+                <Input
+                  {...form.register(`PASSENGER_DETAILS.${index}.NAME`)}
+                  placeholder="Name"
+                />
+                {form.formState.errors?.PASSENGER_DETAILS?.[index]?.NAME && (
+                  <p className="bg-destructive/75 p-2 rounded text-destructive-foreground shadow">
+                    {
+                      form.formState.errors.PASSENGER_DETAILS[index].NAME
+                        ?.message
+                    }
+                  </p>
+                )}
+              </div>
+              <div className="w-full flex flex-col gap-y-4">
+                <Input
+                  {...form.register(`PASSENGER_DETAILS.${index}.AGE`, {
+                    valueAsNumber: true,
+                  })}
+                  placeholder="Age"
+                  type="number"
+                />
+                {form.formState.errors?.PASSENGER_DETAILS?.[index]?.AGE && (
+                  <p className="bg-destructive/75 p-2 rounded text-destructive-foreground shadow">
+                    {form.formState.errors.PASSENGER_DETAILS[index].AGE.message}
+                  </p>
+                )}
+              </div>
+              <div className="w-full flex flex-col gap-y-4">
+                <Select {...form.register(`PASSENGER_DETAILS.${index}.GENDER`)}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Gender" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="Male">Male</SelectItem>
+                    <SelectItem value="Female">Female</SelectItem>
+                    <SelectItem value="Transgender">Transgender</SelectItem>
+                  </SelectContent>
+                </Select>
+                {form.formState.errors?.PASSENGER_DETAILS?.[index]?.GENDER && (
+                  <p className="bg-destructive/75 p-2 rounded text-destructive-foreground shadow">
+                    {
+                      form.formState.errors.PASSENGER_DETAILS[index].GENDER
+                        .message
+                    }
+                  </p>
+                )}
+              </div>
+              <div className="flex justify-between gap-x-2">
+                {fields.length > 1 && (
+                  <Button
+                    variant="destructive"
+                    type="button"
+                    onClick={() => remove(index)}
+                  >
+                    Remove
+                  </Button>
+                )}
+
+                <Button
+                  type="button"
+                  onClick={() =>
+                    append({
+                      NAME: "",
+                      AGE: 0,
+                      FOOD: "No Food",
+                      GENDER: "Male",
+                      SEAT: "No Preference",
+                    })
+                  }
+                >
+                  Add Passenger
+                </Button>
+              </div>
+            </div>
+          ))}
           <Button type="submit">Submit</Button>
         </form>
       </Form>

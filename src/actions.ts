@@ -7,7 +7,9 @@ import { BookingDataSchema } from "@/types";
 import { formatDate } from "./lib/utils";
 
 export const runTicket = (data: z.infer<typeof BookingDataSchema>) => {
-  data.TRAVEL_DATE = formatDate(data.TRAVEL_DATE);
+  if (data.TRAVEL_DATE.includes("-")) {
+    data.TRAVEL_DATE = formatDate(data.TRAVEL_DATE);
+  }
   fs.writeFileSync(
     "./cypress/fixtures/passenger_data.json",
     JSON.stringify(data)
