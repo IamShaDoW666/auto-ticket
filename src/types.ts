@@ -23,14 +23,20 @@ export const SeatSchema = z.enum([
 ]);
 export type Seats = z.infer<typeof SeatSchema>
 
+export const GenderSchema = z.enum(["Male", "Female", "Transgender"])
+export type Gender = z.infer<typeof GenderSchema>
+
+export const FoodSchema = z.enum(["Veg", "Non Veg", "No Food"])
+export type Food = z.infer<typeof FoodSchema>
+
 export const PassengerDetailSchema = z.object({
   NAME: z.string().min(1, {
     message: "Enter a proper name"
   }),
   AGE: z.number().positive('Age must be a positive number'),
-  GENDER: z.enum(["Male", "Female", "Transgender"]),
+  GENDER: GenderSchema,
   SEAT: SeatSchema,
-  FOOD: z.enum(["Veg", "Non Veg", "No Food"]),
+  FOOD: FoodSchema,
 });
 export type PassengerDetail = z.infer<typeof PassengerDetailSchema>;
 
@@ -43,7 +49,7 @@ export const BookingDataSchema = z.object({
   DESTINATION_STATION: z.string(),
   TATKAL: z.boolean(),
   PREMIUM_TATKAL: z.boolean(),
-  UPI_ID_CONFIG: z.string(),
+  UPI_ID_CONFIG: z.string().optional(),
   PASSENGER_DETAILS: z.array(PassengerDetailSchema).min(1, {
     message: "Atleast one passenger is required!"
   }),

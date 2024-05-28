@@ -18,10 +18,33 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
-import { useFieldArray, useForm } from "react-hook-form";
+import { FieldArrayWithId, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BookingDataSchema } from "@/types";
+import {
+  BookingDataSchema,
+  Food,
+  FoodSchema,
+  Gender,
+  Seats,
+  SeatSchema,
+} from "@/types";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { cn } from "@/lib/utils";
+import STATIONS from "@/lib/stations.json";
+import { Check, ChevronsUpDown } from "lucide-react";
 
 export default function Home() {
   const form = useForm<z.infer<typeof BookingDataSchema>>({
@@ -40,15 +63,18 @@ export default function Home() {
         {
           NAME: "Pramodan P",
           AGE: 50,
+          SEAT: "Window Side",
+          FOOD: "Non Veg",
           GENDER: "Male",
-          SEAT: "No Preference",
-          FOOD: "No Food",
         },
       ],
     },
   });
 
   const { fields, append, remove } = useFieldArray({
+    rules: {
+      minLength: 1,
+    },
     control: form.control,
     name: "PASSENGER_DETAILS",
   });
@@ -58,8 +84,9 @@ export default function Home() {
     runTicket(values);
     console.log(values);
   }
+
   return (
-    <main className="max-w-6xl mx-auto py-12">
+    <main className="max-w-6xl mx-auto py-12 px-4">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
@@ -75,14 +102,109 @@ export default function Home() {
               </FormItem>
             )}
           />
+          {/* <FormField
+            control={form.control}
+            name="SOURCE_STATION"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>SOURCE STATION</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          "w-[200px] justify-between",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value
+                          ? 
+                          `${
+                              STATIONS.find(
+                                (station) => station.code === field.value
+                              )?.name
+                            } (${
+                              STATIONS.find(
+                                (station) => station.code === field.value
+                              )?.code
+                            })`
+                          : "Select Station"}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[200px] p-0">
+                    <Command>
+                      <CommandInput placeholder="Search station..." />
+                      <CommandEmpty>No Station found.</CommandEmpty>
+                      <CommandGroup>
+                        <CommandList >
+                          {STATIONS.map((station, idx) => (
+                            <CommandItem
+                              key={idx}
+                              className="flex gap-x-4"
+                              value={station.code}
+                              onSelect={() => {
+                                form.setValue("SOURCE_STATION", station.code);
+                              }}
+                            >
+                              {station.name}
+                              <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              station.code === field.value
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                            </CommandItem>
+                          ))}
+                        </CommandList>
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          /> */}
           <FormField
             control={form.control}
             name="DESTINATION_STATION"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>DESTINATION_STATION</FormLabel>
+                <FormLabel>DESTINATION STATION</FormLabel>
                 <FormControl>
                   <Input placeholder="shadcn" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="TRAIN_NO"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>TRAIN NO</FormLabel>
+                <FormControl>
+                  <Input placeholder="shadcn" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="TRAVEL_DATE"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>TRAVEL DATE</FormLabel>
+                <FormControl>
+                  <Input type="date" placeholder="shadcn" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -117,7 +239,7 @@ export default function Home() {
             render={({ field }) => (
               <FormItem>
                 <div className="flex gap-x-4 items-center">
-                  <FormLabel>PREMIUM_TATKAL</FormLabel>
+                  <FormLabel>PREMIUM TATKAL</FormLabel>
                   <FormControl>
                     <Checkbox
                       className="w-5 h-5 rounded-lg"
@@ -139,7 +261,7 @@ export default function Home() {
             name="TRAIN_COACH"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>TRAIN_COACH</FormLabel>
+                <FormLabel>TRAIN COACH</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -166,84 +288,158 @@ export default function Home() {
           />
           <FormField
             control={form.control}
-            name="TRAIN_NO"
+            name="UPI_ID_CONFIG"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>TRAIN_NO</FormLabel>
+                <FormLabel>UPI ID</FormLabel>
                 <FormControl>
-                  <Input placeholder="shadcn" {...field} />
+                  <Input placeholder="test@example" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="TRAVEL_DATE"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>TRAVEL DATE</FormLabel>
-                <FormControl>
-                  <Input type="date" placeholder="shadcn" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() =>
+              append({
+                NAME: "",
+                AGE: 0,
+                FOOD: "No Food",
+                GENDER: "Male",
+                SEAT: "No Preference",
+              })
+            }
+          >
+            Add Passenger
+          </Button>
           {fields.map((passenger, index) => (
             <div
-              className="flex gap-x-4 justify-between w-full"
+              className="md:flex gap-x-4 justify-between w-full"
               key={passenger.id}
             >
-              <div className="w-full flex flex-col gap-y-4">
-                <Input
-                  {...form.register(`PASSENGER_DETAILS.${index}.NAME`)}
-                  placeholder="Name"
-                />
-                {form.formState.errors?.PASSENGER_DETAILS?.[index]?.NAME && (
-                  <p className="bg-destructive/75 p-2 rounded text-destructive-foreground shadow">
-                    {
-                      form.formState.errors.PASSENGER_DETAILS[index].NAME
-                        ?.message
+              <div className="grid grid-cols-1 md:grid-cols-3 w-full gap-4">
+                <div className="w-full flex flex-col gap-y-4">
+                  <Input
+                    {...form.register(`PASSENGER_DETAILS.${index}.NAME`)}
+                    placeholder="Name"
+                  />
+                  {form.formState.errors?.PASSENGER_DETAILS?.[index]?.NAME && (
+                    <p className="bg-destructive/75 p-2 rounded text-destructive-foreground shadow">
+                      {
+                        form.formState.errors.PASSENGER_DETAILS[index].NAME
+                          ?.message
+                      }
+                    </p>
+                  )}
+                </div>
+                <div className="w-full flex flex-col gap-y-4">
+                  <Input
+                    {...form.register(`PASSENGER_DETAILS.${index}.AGE`, {
+                      valueAsNumber: true,
+                    })}
+                    placeholder="Age"
+                    type="number"
+                  />
+                  {form.formState.errors?.PASSENGER_DETAILS?.[index]?.AGE && (
+                    <p className="bg-destructive/75 p-2 rounded text-destructive-foreground shadow">
+                      {
+                        form.formState.errors.PASSENGER_DETAILS[index].AGE
+                          .message
+                      }
+                    </p>
+                  )}
+                </div>
+                <div className="w-full flex flex-col gap-y-4">
+                  <Select
+                    defaultValue={passenger.GENDER}
+                    onValueChange={(val: Gender) =>
+                      form.setValue(`PASSENGER_DETAILS.${index}.GENDER`, val)
                     }
-                  </p>
-                )}
-              </div>
-              <div className="w-full flex flex-col gap-y-4">
-                <Input
-                  {...form.register(`PASSENGER_DETAILS.${index}.AGE`, {
-                    valueAsNumber: true,
-                  })}
-                  placeholder="Age"
-                  type="number"
-                />
-                {form.formState.errors?.PASSENGER_DETAILS?.[index]?.AGE && (
-                  <p className="bg-destructive/75 p-2 rounded text-destructive-foreground shadow">
-                    {form.formState.errors.PASSENGER_DETAILS[index].AGE.message}
-                  </p>
-                )}
-              </div>
-              <div className="w-full flex flex-col gap-y-4">
-                <Select {...form.register(`PASSENGER_DETAILS.${index}.GENDER`)}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Gender" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="Male">Male</SelectItem>
-                    <SelectItem value="Female">Female</SelectItem>
-                    <SelectItem value="Transgender">Transgender</SelectItem>
-                  </SelectContent>
-                </Select>
-                {form.formState.errors?.PASSENGER_DETAILS?.[index]?.GENDER && (
-                  <p className="bg-destructive/75 p-2 rounded text-destructive-foreground shadow">
-                    {
-                      form.formState.errors.PASSENGER_DETAILS[index].GENDER
-                        .message
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Gender" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Male">Male</SelectItem>
+                      <SelectItem value="Female">Female</SelectItem>
+                      <SelectItem value="Transgender">Transgender</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  {form.formState.errors?.PASSENGER_DETAILS?.[index]
+                    ?.GENDER && (
+                    <p className="bg-destructive/75 p-2 rounded text-destructive-foreground shadow">
+                      {
+                        form.formState.errors.PASSENGER_DETAILS[index].GENDER
+                          .message
+                      }
+                    </p>
+                  )}
+                </div>
+                <div className="w-full flex flex-col gap-y-4">
+                  <Select
+                    defaultValue={passenger.FOOD}
+                    onValueChange={(val: Food) =>
+                      form.setValue(`PASSENGER_DETAILS.${index}.FOOD`, val)
                     }
-                  </p>
-                )}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Food" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {FoodSchema.options.map((food, idx) => (
+                        <SelectItem value={food}>{food}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  {form.formState.errors?.PASSENGER_DETAILS?.[index]?.FOOD && (
+                    <p className="bg-destructive/75 p-2 rounded text-destructive-foreground shadow">
+                      {
+                        form.formState.errors.PASSENGER_DETAILS[index].FOOD
+                          .message
+                      }
+                    </p>
+                  )}
+                </div>
+                <div className="w-full flex flex-col gap-y-4">
+                  <Select
+                    defaultValue={passenger.SEAT}
+                    onValueChange={(val: Seats) =>
+                      form.setValue(`PASSENGER_DETAILS.${index}.SEAT`, val)
+                    }
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seat" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {SeatSchema.options.map((seat, idx) => (
+                        <SelectItem key={idx} value={seat}>
+                          {seat}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  {form.formState.errors?.PASSENGER_DETAILS?.[index]
+                    ?.GENDER && (
+                    <p className="bg-destructive/75 p-2 rounded text-destructive-foreground shadow">
+                      {
+                        form.formState.errors.PASSENGER_DETAILS[index].GENDER
+                          .message
+                      }
+                    </p>
+                  )}
+                </div>
               </div>
               <div className="flex justify-between gap-x-2">
                 {fields.length > 1 && (
@@ -255,24 +451,10 @@ export default function Home() {
                     Remove
                   </Button>
                 )}
-
-                <Button
-                  type="button"
-                  onClick={() =>
-                    append({
-                      NAME: "",
-                      AGE: 0,
-                      FOOD: "No Food",
-                      GENDER: "Male",
-                      SEAT: "No Preference",
-                    })
-                  }
-                >
-                  Add Passenger
-                </Button>
               </div>
             </div>
           ))}
+
           <Button type="submit">Submit</Button>
         </form>
       </Form>
