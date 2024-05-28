@@ -1,0 +1,20 @@
+{
+  "TRAIN_NO": "16306",
+  "TRAIN_COACH": "2S",
+  "TRAVEL_DATE": "30/05/2024",
+  "SOURCE_STATION": "TLY",
+  "BOARDING_STATION": null,
+  "DESTINATION_STATION": "AWY",
+  "TATKAL": false,
+  "PREMIUM_TATKAL": false,
+  "UPI_ID_CONFIG": "",
+  "PASSENGER_DETAILS": [
+    {
+      "NAME": "Pramodan P",
+      "AGE": 50,
+      "GENDER": "Male",
+      "SEAT": "No Preference",
+      "FOOD": "No Food"
+    }
+  ]
+}
