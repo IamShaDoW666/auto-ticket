@@ -1,1 +1,20 @@
-{"TRAIN_NO":"Voluptas nemo perspi","TRAIN_COACH":"CC","TRAVEL_DATE":"19/06/1978","SOURCE_STATION":"Aliqua Rerum quia v","BOARDING_STATION":null,"DESTINATION_STATION":"Autem soluta fuga M","TATKAL":false,"PREMIUM_TATKAL":false,"UPI_ID_CONFIG":"","PASSENGER_DETAILS":[{"NAME":"Uriah Small","AGE":95,"GENDER":"Female","SEAT":"Side Lower","FOOD":"Non Veg"},{"NAME":"Sasha Jones","AGE":91,"GENDER":"Male","SEAT":"Lower","FOOD":"No Food"}]}
+{
+  "TRAIN_NO": "22609",
+  "TRAIN_COACH": "2S",
+  "TRAVEL_DATE": "31/05/2024",
+  "SOURCE_STATION": "CAN",
+  "BOARDING_STATION": null,
+  "DESTINATION_STATION": "OTP",
+  "TATKAL": false,
+  "PREMIUM_TATKAL": false,
+  "UPI_ID_CONFIG": "milanpramod123@oksbi",
+  "PASSENGER_DETAILS": [
+    {
+      "NAME": "Milan",
+      "AGE": 20,
+      "GENDER": "Male",
+      "SEAT": "Window Side",
+      "FOOD": "Non Veg"
+    }
+  ]
+}
