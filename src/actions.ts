@@ -10,17 +10,17 @@ export const runTicket = (data: z.infer<typeof BookingDataSchema>) => {
   if (data.TRAVEL_DATE.includes("-")) {
     data.TRAVEL_DATE = formatDate(data.TRAVEL_DATE);
   }
-  console.log(data)
+  console.log(data);
   fs.writeFileSync(
     "./cypress/fixtures/passenger_data.json",
     JSON.stringify(data)
   );
-  //   exec("npx cypress run --headed", (error, stdout, stderr) => {
-  //     if (error) {
-  //       console.error(`exec error: ${error}`);
-  //       return;
-  //     }
-  //     console.log(`stdout: ${stdout}`);
-  //     console.error(`stderr: ${stderr}`);
-  //   });
+  exec("npx cypress run --headed", (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return;
+    }
+    console.log(`stdout: ${stdout}`);
+    console.error(`stderr: ${stderr}`);
+  });
 };
