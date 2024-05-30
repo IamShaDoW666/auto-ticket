@@ -29,22 +29,7 @@ import {
   SeatSchema,
 } from "@/types";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { cn } from "@/lib/utils";
-import STATIONS from "@/lib/stations.json";
-import { Check, ChevronsUpDown } from "lucide-react";
+
 
 export default function Home() {
   const form = useForm<z.infer<typeof BookingDataSchema>>({
